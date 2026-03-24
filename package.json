@@ -4,15 +4,19 @@
   "main": "index.ts",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "deploy": "aws s3 sync ./public s3://my-dver-apk-bucket-2026/"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "~1.23.1",
     "expo": "~55.0.8",
+    "expo-av": "^16.0.8",
     "expo-status-bar": "~55.0.4",
     "react": "19.2.0",
-    "react-native": "0.83.2"
+    "react-native": "0.83.2",
+    "react-native-android-notification-listener": "^5.0.1"
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
