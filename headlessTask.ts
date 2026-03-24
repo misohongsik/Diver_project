@@ -3,7 +3,12 @@ import { Audio } from 'expo-av';
 
 export const headlessNotificationListener = async (notification: any) => {
   try {
-    const parsedNotification = JSON.parse(notification);
+    // ⚠️ 중요: 라이브러리 버전에 따라 notification이 이미 객체일 수 있습니다.
+    const parsedNotification = typeof notification === 'string' 
+      ? JSON.parse(notification) 
+      : notification;
+
+    if (!parsedNotification) return;
 
     // 필터링 대상 앱 확인 (디버, 고고엑스, 인성 1 등)
     const targetApps = ['kr.co.dver.rider', 'hk.gogovan.GoGoDriver', 'com.insung.insung1data', 'com.logiway.isplex'];
