@@ -100,17 +100,23 @@ export const headlessNotificationListener = async (notification: any) => {
            
            const { sound } = await Audio.Sound.createAsync(
              { uri: 'https://actions.google.com/sounds/v1/science_fiction/klaxon_alarm_loop.ogg' },
-             { shouldPlay: true, isLooping: true }
+             { shouldPlay: true, isLooping: true, volume: 1.0 }
            );
 
-           const checkStop = setInterval(async () => {
+           // 💡 중요: setInterval 대신 while 루프를 사용하여 Headless JS 작업이 종료되지 않게 유지합니다.
+           // 그렇지 않으면 소리가 시작되자마자 작업이 끝나 Android가 소리를 차단할 수 있습니다.
+           let isRinging = true;
+           while (isRinging) {
              const status = await AsyncStorage.getItem('DVER_ALARM_IS_RINGING');
              if (status === "false") {
+               isRinging = false;
                await sound.stopAsync();
                await sound.unloadAsync();
-               clearInterval(checkStop);
+             } else {
+               // 1초마다 상태를 확인하며 대기 (이 대기 상태가 Headless JS 작업을 유지시킵니다)
+               await new Promise(resolve => setTimeout(resolve, 1000));
              }
-           }, 1000);
+           }
          } catch (error) {
            console.error('Audio Play Error:', error);
          }
